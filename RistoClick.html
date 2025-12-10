@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RistoClick - Siti Web per Ristoranti</title>
+    <!-- Importazione Font Google: Solo Montserrat (più pesi per il grassetto) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Icone FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- RESET E BASE --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #111111;
+            color: #f3f4f6;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* --- VARIABILI COLORI --- */
+        :root {
+            --gold-light: #F9D976;
+            --gold-dark: #B8860B;
+            --bg-dark: #111111;
+            --bg-card: #1a1a1a;
+            --text-gray: #a0a0a0;
+        }
+
+        /* --- TIPOGRAFIA --- */
+        h1, h2, h3, h4 {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        h1 { 
+            font-size: 4.5rem; 
+            line-height: 1.1; 
+            margin-bottom: 10px; 
+        }
+
+        h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 20px; 
+        }
+
+        h3 { 
+            font-size: 1.5rem; 
+            margin-bottom: 15px; 
+        }
+
+        p { 
+            font-size: 1rem; 
+            color: var(--text-gray); 
+            line-height: 1.7;
+        }
+
+        .text-gold {
+            background: linear-gradient(to right, var(--gold-light), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            display: inline-block;
+        }
+
+        .text-gold-solid {
+            color: var(--gold-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .bg-card {
+            background-color: var(--bg-card);
+        }
+
+        /* Bottoni */
+        .btn {
+            display: inline-block;
+            padding: 16px 36px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(90deg, var(--gold-light), var(--gold-dark));
+            color: #111;
+            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(184, 134, 11, 0.5);
+        }
+
+        .btn-outline {
+            border: 2px solid rgba(255,255,255,0.2);
+            color: #fff;
+            background: transparent;
+        }
+        .btn-outline:hover {
+            border-color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* Griglie */
+        .grid {
+            display: grid;
+            gap: 30px;
+        }
+        .grid-2 { grid-template-columns: 1fr; }
+        .grid-3 { grid-template-columns: 1fr; }
+        .grid-4 { grid-template-columns: 1fr; }
+
+        @media(min-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+            .grid-3 { grid-template-columns: repeat(3, 1fr); }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media(min-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #f3f4f6;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold-light); }
+
+        .mobile-menu-btn {
+            display: block;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        @media(min-width: 992px) {
+            .nav-links { display: flex; }
+            .mobile-menu-btn { display: none; }
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 140px 20px 80px;
+            position: relative;
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero-header {
+            margin-bottom: 50px;
+            z-index: 10;
+        }
+
+        .hero-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            width: 100%;
+            max-width: 1400px;
+            z-index: 10;
+        }
+
+        @media (min-width: 992px) {
+            .hero-body {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 80px;
+            }
+            .hero-text {
+                text-align: left;
+                max-width: 650px;
+                padding-left: 20px;
+            }
+            .hero-buttons {
+                justify-content: flex-start;
+            }
+        }
+
+        .brand-name {
+            font-size: 6rem; 
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+        
+        .tagline {
+            font-size: 1.5rem; 
+            color: #ccc; 
+            letter-spacing: 5px; 
+            text-transform: uppercase; 
+            font-weight: 700;
+        }
+
+        .hero-text h2 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+        
+        .hero-text p {
+            font-size: 1.3rem; 
+            margin-bottom: 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* === LOGO: MONITOR === */
+        
+        .logo-container {
+            position: relative;
+            width: 600px; 
+            height: 450px;
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .monitor-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            filter: drop-shadow(0 30px 50px rgba(0,0,0,0.7));
+            animation: floatMonitor 6s ease-in-out infinite;
+            transform: scale(1.1);
+        }
+
+        @keyframes floatMonitor {
+            0%, 100% { transform: scale(1.1) translateY(0); }
+            50% { transform: scale(1.1) translateY(-10px); }
+        }
+
+        .monitor-frame {
+            width: 460px;
+            height: 290px;
+            background: #222;
+            border-radius: 16px;
+            padding: 12px;
+            position: relative;
+            box-shadow: 
+                inset 0 0 0 2px #3a3a3a, 
+                0 0 0 1px #000;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .monitor-chin {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 30px;
+            display: flex;
+            align-items: center; justify-content: center;
+        }
+        .monitor-chin::after {
+            content: 'RistoClick';
+            font-size: 0.6rem;
+            color: #555;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .monitor-screen {
+            width: 100%;
+            height: calc(100% - 20px);
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        .screen-glare {
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%, transparent 100%);
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .browser-bar {
+            width: 100%; height: 28px;
+            background: rgba(0,0,0,0.4);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; 
+            align-items: center; 
+            padding-left: 12px; 
+            gap: 8px;
+            position: absolute; 
+            top: 0; left: 0; right: 0; 
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+        .dot { 
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .dot-r { background: #FF5F57; border: 1px solid #E0443E; }
+        .dot-y { background: #FEBC2E; border: 1px solid #D89E24; }
+        .dot-g { background: #28C840; border: 1px solid #1AAB29; }
+
+        .monitor-stand {
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(to bottom, #1a1a1a, #0d0d0d);
+            margin-top: -2px;
+            z-index: -1;
+            position: relative;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+        }
+
+        .monitor-base {
+            width: 160px;
+            height: 10px;
+            background: #2a2a2a;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            margin-top: 0;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        .slide {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: row; 
+            align-items: center; justify-content: center;
+            opacity: 0; transition: all 0.8s ease-in-out;
+            color: white; gap: 25px;
+            padding-top: 25px;
+        }
+        .slide.active { opacity: 1; }
+
+        .slide-content { text-align: left; }
+        .slide-icon { font-size: 4rem; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        
+        .slide-text { 
+            font-size: 1.4rem; font-weight: 800; text-transform: uppercase; 
+            margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .slide-sub { font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-bottom: 10px; }
+        
+        .slide-btn { 
+            background: white; color: black; font-size: 0.8rem; font-weight: 900; 
+            padding: 6px 16px; border-radius: 4px; display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .bg-slide-1 { background: radial-gradient(circle at center, #dc2626 0%, #7f1d1d 100%); }
+        .bg-slide-2 { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); }
+        .bg-slide-3 { background: radial-gradient(circle at center, #ea580c 0%, #9a3412 100%); }
+        .bg-slide-4 { background: radial-gradient(circle at center, #059669 0%, #064e3b 100%); }
+
+        /* --- SERVIZI (CON ANIMAZIONE SCROLL FIXATA) --- */
+        .service-card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            
+            /* Animazione Base (Entrata) */
+            opacity: 0; 
+            transform: translateX(-100px); 
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+        }
+
+        /* Classe aggiunta via JS quando visibile */
+        .service-card.visible {
+            opacity: 1;
+            transform: translateX(0); 
+        }
+
+        /* Ritardi per effetto "onda" */
+        .service-card:nth-child(1) { transition-delay: 0.1s; }
+        .service-card:nth-child(2) { transition-delay: 0.3s; }
+        .service-card:nth-child(3) { transition-delay: 0.5s; }
+        .service-card:nth-child(4) { transition-delay: 0.7s; }
+
+        /* FIX HOVER: Rimuove il delay e velocizza la transizione */
+        .service-card:hover {
+            border-color: var(--gold-dark);
+            transform: translateY(-5px) !important;
+            transition-delay: 0s; /* Fondamentale: azzera il ritardo */
+            transition-duration: 0.3s; /* Velocizza l'hover */
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+        }
+        .service-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; }
+        .service-card p { font-size: 0.95rem; line-height: 1.6; color: var(--text-gray); }
+
+        /* --- SHOWCASE --- */
+        .showcase-text h2 { font-size: 2.8rem; line-height: 1.2; }
+        .showcase-list li { margin-bottom: 15px; font-size: 1.1rem; }
+        .showcase-list i { font-size: 1.3rem; margin-right: 15px; color: var(--gold-light); }
+        
+        .mockup-container {
+            width: 300px;
+            height: 600px;
+            border: 12px solid #333;
+            border-radius: 40px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .mockup-img { width: 100%; height: 100%; object-fit: cover; }
+        .mockup-overlay {
+            position: absolute; bottom: 20px; left: 15px; right: 15px;
+            background: #000; color: #fff; padding: 10px; border-radius: 10px;
+            text-align: center; font-weight: bold; font-size: 0.9rem;
+        }
+
+        @media(min-width: 900px) {
+            .showcase-content { display: flex; justify-content: space-between; align-items: center; gap: 50px; }
+            .showcase-text { width: 50%; text-align: left; }
+            .mockup-wrapper { width: 40%; display: flex; justify-content: center; }
+        }
+
+        /* --- PRICING --- */
+        .price-card {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 40px 30px;
+            position: relative;
+            background: transparent;
+            transition: 0.3s;
+        }
+        .price-card.recommended {
+            border-color: var(--gold-dark);
+            background: #1a1a1a;
+            box-shadow: 0 0 30px rgba(184, 134, 11, 0.15);
+        }
+        .price { font-size: 2.8rem; font-weight: 800; color: var(--gold-light); margin: 20px 0; }
+        .period { font-size: 1rem; color: #666; font-weight: normal; }
+        .features-list { list-style: none; margin-bottom: 30px; text-align: left; }
+        .features-list li { padding: 8px 0; color: #ccc; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; }
+        .features-list i { color: var(--gold-light); margin-right: 10px; }
+        .badge {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--gold-light); color: #000; padding: 5px 15px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;
+        }
+
+        /* --- FOOTER --- */
+        footer { 
+            background-color: #000; 
+            border-top: 1px solid #333; 
+            padding-top: 80px; 
+            padding-bottom: 30px; 
+        }
+        .footer-info p { margin-bottom: 20px; font-size: 0.95rem; max-width: 400px; }
+        .contact-item { display: flex; align-items: center; gap: 10px; color: #ccc; margin-bottom: 15px; cursor: pointer; transition: color 0.3s; }
+        .contact-item:hover { color: var(--gold-light); }
+        
+        .contact-form {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
+        .form-input, .form-select {
+            width: 100%; background: #111; border: 1px solid #333; padding: 12px;
+            border-radius: 5px; color: #fff; font-family: inherit; margin-bottom: 0;
+        }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--gold-dark); }
+        
+        .social-icons a {
+            display: inline-flex; width: 40px; height: 40px; background: #222; color: #fff;
+            border-radius: 50%; align-items: center; justify-content: center; margin-right: 10px; transition: 0.3s;
+        }
+        .social-icons a:hover { background: var(--gold-light); color: #000; }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 768px) {
+            .hero { padding-top: 100px; }
+            .brand-name { font-size: 3.5rem; }
+            .tagline { font-size: 1rem; letter-spacing: 2px; }
+            .logo-container { transform: scale(0.8); margin-bottom: 0; width: 100%; height: auto; }
+            .monitor-wrapper { transform: scale(0.85); animation: none; }
+            .monitor-frame { width: 340px; height: 220px; }
+            .monitor-base { width: 120px; }
+            h2 { font-size: 2.2rem; }
+            .mockup-container { width: 100%; max-width: 280px; height: 550px; margin: 40px auto 0; }
+            .hero-header { margin-bottom: 30px; }
+            .hero-body { gap: 30px; }
+            .hero-text h2 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="container nav-content">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-qrcode text-gold-solid"></i>
+                <span>Risto<span class="text-gold">Click</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#servizi">Servizi</a>
+                <a href="#vantaggi">Vantaggi</a>
+                <a href="#prezzi">Prezzi</a>
+                <a href="#contatti" class="btn btn-outline" style="padding: 8px 24px; font-size: 0.9rem;">Richiedi Preventivo</a>
+            </div>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero">
+        <div class="hero-header">
+            <h1 class="brand-name">Risto<span class="text-gold">Click</span></h1>
+            <p class="tagline">Menus, Online & More</p>
+        </div>
+        <div class="hero-body">
+            <div class="logo-container">
+                <div class="monitor-wrapper">
+                    <div class="monitor-frame">
+                        <div class="monitor-screen">
+                            <div class="browser-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+                            <div class="screen-glare"></div>
+                            <div id="logoSlider">
+                                <div class="slide bg-slide-1 active">
+                                    <div class="slide-icon">🍕</div>
+                                    <div class="slide-content"><div class="slide-text">Pizza Doc</div><div class="slide-sub">Napoli Style</div><div class="slide-btn">ORDINA</div></div>
+                                </div>
+                                <div class="slide bg-slide-2">
+                                    <div class="slide-icon">🍣</div>
+                                    <div class="slide-content"><div class="slide-text">Sushi Zen</div><div class="slide-sub">Tokyo Taste</div><div class="slide-btn">PRENOTA</div></div>
+                                </div>
+                                <div class="slide bg-slide-3">
+                                    <div class="slide-icon">🍔</div>
+                                    <div class="slide-content"><div class="slide-text">King Burger</div><div class="slide-sub">Best in Town</div><div class="slide-btn">DELIVERY</div></div>
+                                </div>
+                                <div class="slide bg-slide-4">
+                                    <div class="slide-icon">🌿</div>
+                                    <div class="slide-content"><div class="slide-text">Bio Food</div><div class="slide-sub">Healthy Life</div><div class="slide-btn">MENU</div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="monitor-chin"></div>
+                    </div>
+                    <div class="monitor-stand"></div><div class="monitor-base"></div>
+                </div>
+            </div>
+            <div class="hero-text">
+                <h2>Il tuo ristorante,<br><span class="text-gold">finalmente online.</span></h2>
+                <p>Non un semplice sito, ma uno strumento di vendita. Trasforma i visitatori in clienti con menu digitali, prenotazioni smart e design da acquolina in bocca.</p>
+                <div class="hero-buttons">
+                    <a href="#contatti" class="btn btn-gold">Inizia Ora</a>
+                    <a href="#servizi" class="btn btn-outline">Scopri di più</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: SERVIZI (ANIMATA) -->
+    <section id="servizi" class="section-padding bg-card">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2>I Nostri <span class="text-gold">Servizi</span></h2>
+                <p style="color: #888; max-width: 700px; margin: 10px auto; font-size: 1.1rem;">Tutto ciò di cui hai bisogno per gestire la tua presenza online in un unico posto.</p>
+            </div>
+
+            <div class="grid grid-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-globe"></i></div>
+                    <h3>Siti Web Vetrina</h3>
+                    <p>Un sito elegante, veloce e mobile-friendly che racconta la storia del tuo ristorante.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-qrcode"></i></div>
+                    <h3>Menù QR Digitale</h3>
+                    <p>Interattivi e facili da aggiornare. Basta PDF illeggibili, passa al digitale.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-server"></i></div>
+                    <h3>Hosting Incluso</h3>
+                    <p>Server veloci e sicuri compresi nel prezzo. Non preoccuparti di rinnovi o problemi tecnici.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Google & Social</h3>
+                    <p>Ottimizzazione scheda Google Maps e integrazione con Instagram per farti trovare.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: SHOWCASE / VANTAGGI -->
+    <section id="vantaggi" class="section-padding showcase-section" style="background-color: #151515;">
+        <div class="container">
+            <div class="showcase-content">
+                <div class="showcase-text">
+                    <h2>Non lasciare che un sito vecchio <span class="text-gold" style="text-decoration: underline;">allontani i clienti</span>.</h2>
+                    <p style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">Oggi il 90% dei clienti cerca il ristorante su Google prima di prenotare. Se non trovano il menù o se il sito è lento, vanno dalla concorrenza.</p>
+                    <ul class="showcase-list" style="margin-top: 30px;">
+                        <li><i class="fas fa-check-circle"></i> Menù aggiornabile in tempo reale</li>
+                        <li><i class="fas fa-check-circle"></i> Foto in alta qualità che fanno venire fame</li>
+                        <li><i class="fas fa-check-circle"></i> Pulsanti "Prenota" sempre visibili</li>
+                        <li><i class="fas fa-check-circle"></i> Perfetto su iPhone e Android</li>
+                    </ul>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 12px; display: inline-flex; align-items: center; gap: 15px; border: 1px solid rgba(184, 134, 11, 0.3); margin-top: 30px;">
+                        <div style="background: var(--gold-light); padding: 10px; border-radius: 50%; color: #000; font-size: 1.2rem;"><i class="fas fa-qrcode"></i></div>
+                        <div><div style="font-weight: 800; color: var(--gold-light); font-size: 1rem;">PROVA LA DIFFERENZA</div><div style="font-size: 0.9rem; color: #aaa;">Scannerizza per vedere una demo</div></div>
+                    </div>
+                </div>
+                <div class="mockup-wrapper">
+                    <div class="mockup-container">
+                        <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="App Preview" class="mockup-img">
+                        <div class="mockup-overlay">Prenota un Tavolo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: PREZZI -->
+    <section id="prezzi" class="section-padding">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2>Investi nel Tuo <span class="text-gold">Successo</span></h2>
+                <p style="color: #888; font-size: 1.1rem;">Prezzi chiari, nessun costo nascosto.</p>
+            </div>
+            <div class="grid grid-3">
+                <div class="price-card">
+                    <h3>Starter</h3><div class="price">€499 <span class="period">/ una tantum</span></div>
+                    <ul class="features-list"><li><i class="fas fa-check"></i> Pagina Web Singola (Landing)</li><li><i class="fas fa-check"></i> Menù Digitale Base (QR)</li><li><i class="fas fa-check"></i> Collegamento Google Maps</li><li><i class="fas fa-check"></i> Hosting incluso 1° anno</li></ul>
+                    <a href="#contatti" class="btn btn-outline" style="width: 100%; text-align: center;">Scegli Starter</a>
+                </div>
+                <div class="price-card recommended">
+                    <div class="badge">Più Richiesto</div>
+                    <h3>Professional</h3><div class="price">€699 <span class="period">/ una tantum</span></div>
+                    <ul class="features-list"><li><i class="fas fa-check"></i> Sito Web Completo (3 Pagine)</li><li><i class="fas fa-check"></i> Menù Interattivo con Foto</li><li><i class="fas fa-check"></i> Traduzione Menù Multilingua</li><li><i class="fas fa-check"></i> Statistiche Visite Mensili</li></ul>
+                    <a href="#contatti" class="btn btn-gold" style="width: 100%; text-align: center;">Scegli Professional</a>
+                </div>
+                <div class="price-card">
+                    <h3>Elite</h3><div class="price">€999+ <span class="period">/ preventivo</span></div>
+                    <ul class="features-list"><li><i class="fas fa-check"></i> Sito Custom Design</li><li><i class="fas fa-check"></i> Configurazione Campagne Ads</li><li><i class="fas fa-check"></i> Gestione Social Media</li><li><i class="fas fa-check"></i> Shooting Fotografico</li></ul>
+                    <a href="#contatti" class="btn btn-outline" style="width: 100%; text-align: center;">Contattaci</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER & FORM -->
+    <footer id="contatti">
+        <div class="container">
+            <div class="grid grid-2">
+                <div class="footer-info">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;"><i class="fas fa-qrcode text-gold-solid" style="font-size: 2.5rem;"></i><h2 style="font-size: 2rem; margin-bottom: 0;">Risto<span class="text-gold">Click</span></h2></div>
+                    <p>Aiutiamo i ristoratori a modernizzare la loro attività con strumenti digitali semplici ed efficaci. Il tuo successo è il nostro menù del giorno.</p>
+                    <div class="contact-item"><i class="fas fa-envelope"></i> info@ristoclick.it</div>
+                    <div class="contact-item"><i class="fas fa-phone"></i> +39 333 123 4567</div>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i> Milano, Italia</div>
+                    <div class="social-icons" style="margin-top: 30px;"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a></div>
+                </div>
+                <div class="contact-form">
+                    <h3 style="color: #fff; margin-bottom: 25px;">Richiedi un'analisi gratuita</h3>
+                    <form onsubmit="event.preventDefault(); alert('Grazie! Ti contatteremo presto.');">
+                        <div class="form-group"><label>Nome del Ristorante</label><input type="text" class="form-input" placeholder="Es. Trattoria da Luigi"></div>
+                        <div class="grid grid-2" style="gap: 15px; margin-bottom: 0;"><div><label>Il tuo Nome</label><input type="text" class="form-input"></div><div><label>Telefono</label><input type="tel" class="form-input"></div></div>
+                        <div class="form-group" style="margin-top: 15px;"><label>Di cosa hai bisogno?</label><select class="form-select"><option>Nuovo Sito Web</option><option>Menù Digitale QR</option><option>Restyling Sito Esistente</option><option>Altro</option></select></div>
+                        <button type="submit" class="btn btn-gold" style="width: 100%; border: none;">Invia Richiesta</button>
+                    </form>
+                </div>
+            </div>
+            <div style="text-align: center; border-top: 1px solid #222; margin-top: 60px; padding-top: 20px; color: #555; font-size: 0.9rem;">&copy; 2025 RistoClick. Tutti i diritti riservati.</div>
+        </div>
+    </footer>
+
+    <script>
+        // LOGICA SLIDER
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 3000);
+
+        // LOGICA SCROLL ANIMATION (INTERSECTION OBSERVER)
+        const observerOptions = {
+            threshold: 0.2 // Attiva quando il 20% dell'elemento è visibile
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Facoltativo: smetti di osservare dopo l'animazione se vuoi che accada solo una volta
+                    // observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        // Seleziona tutte le card dei servizi
+        document.querySelectorAll('.service-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // MENU MOBILE
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        menuBtn.addEventListener('click', () => {
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.width = '100%';
+                navLinks.style.background = '#1a1a1a';
+                navLinks.style.padding = '30px';
+                navLinks.style.borderBottom = '1px solid #333';
+            }
+        });
+    </script>
+</body>
+</html>
